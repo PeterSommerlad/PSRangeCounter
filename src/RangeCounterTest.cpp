@@ -38,6 +38,22 @@ void testUnitRangeIteratorCanIncrement(){
 	++it;
 	ASSERT_EQUAL(it,end(range));
 }
+void testRangeLoopEmpty(){
+	bool inbody{};
+	for(auto const i: 0_times){
+		inbody = true;
+		std::ignore = i;
+	}
+	ASSERT(not inbody);
+}
+void testRangeLoopOnce(){
+	bool inbody{};
+	for(auto const i: 1_times){
+		inbody = true;
+		std::ignore = i;
+	}
+	ASSERT(inbody);
+}
 void testRangeLoopLoops(){
 	size_t sum{};
 	for(auto const i : 11_times){
@@ -45,6 +61,8 @@ void testRangeLoopLoops(){
 	}
 	ASSERT_EQUAL(55u,sum);
 }
+
+
 void testRangeForWithVariable(){
 	int const steps{5};
 	size_t sum{};
@@ -70,6 +88,8 @@ void testRbeginIncDecrementsValue(){
 
 #include "reversed.h"
 
+#include <algorithm>
+
 #include <string>
 
 using adapter::reversed;
@@ -82,7 +102,12 @@ void testReversedRange(){
 	ASSERT_EQUAL("109876543210",sum);
 }
 
-
+void test_with_algorithm(){
+	std::string s{};
+	using it=ps_counter::iterator;
+	std::transform(it{},it{10},std::back_inserter(s),[](size_t i){return std::to_string(i)[0];});
+	ASSERT_EQUAL("0123456789",s);
+}
 
 
 bool runAllTests(int argc, char const *argv[]) {
@@ -94,11 +119,14 @@ bool runAllTests(int argc, char const *argv[]) {
 	s.push_back(CUTE(testBeginEndCompareInequal));
 	s.push_back(CUTE(testEmptyRangeBeginEndEqual));
 	s.push_back(CUTE(testUnitRangeIteratorCanIncrement));
+	s.push_back(CUTE(testRangeLoopEmpty));
+	s.push_back(CUTE(testRangeLoopOnce));
 	s.push_back(CUTE(testRangeLoopLoops));
 	s.push_back(CUTE(testRangeForWithVariable));
 	s.push_back(CUTE(testReversedRange));
 	s.push_back(CUTE(testRbeginOneFromEnd));
 	s.push_back(CUTE(testRbeginIncDecrementsValue));
+	s.push_back(CUTE(test_with_algorithm));
 	cute::xml_file_opener xmlfile(argc, argv);
 	cute::xml_listener<cute::ide_listener<>> lis(xmlfile.out);
 	auto runner = cute::makeRunner(lis, argc, argv);
