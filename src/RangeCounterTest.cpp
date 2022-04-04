@@ -109,6 +109,13 @@ void test_with_algorithm(){
 	ASSERT_EQUAL("0123456789",s);
 }
 
+void test_with_copy(int *p){
+	using it=ps_counter::iterator;
+	std::vector<int> v{};
+	std::copy(it{},it{10}, p);
+
+}
+
 
 bool runAllTests(int argc, char const *argv[]) {
 	cute::suite s { };
@@ -127,6 +134,7 @@ bool runAllTests(int argc, char const *argv[]) {
 	s.push_back(CUTE(testRbeginOneFromEnd));
 	s.push_back(CUTE(testRbeginIncDecrementsValue));
 	s.push_back(CUTE(test_with_algorithm));
+	//s.push_back(CUTE(test_with_copy));
 	cute::xml_file_opener xmlfile(argc, argv);
 	cute::xml_listener<cute::ide_listener<>> lis(xmlfile.out);
 	auto runner = cute::makeRunner(lis, argc, argv);

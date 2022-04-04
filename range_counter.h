@@ -46,7 +46,17 @@ operator++(reverse_iterator &it){
 	return it = reverse_iterator{*it};
 }
 }
-
+#include <iterator>
+namespace std{
+template<>
+struct iterator_traits<ps_counter::iterator>{
+	using iterator_category=input_iterator_tag;
+	using value_type=decltype(*ps_counter::iterator{});
+	using difference_type=ptrdiff_t;
+	using pointer_type = value_type const *;
+	using reference_type = value_type const &;
+};
+}
 
 
 #endif /* RANGE_COUNTER_H_ */
