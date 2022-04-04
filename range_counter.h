@@ -16,12 +16,12 @@ begin(range){
 }
 constexpr auto
 end(range const r){
-	return iterator{r};
+	return iterator(r);
 }
 
 constexpr auto
 rbegin(range const r){
-	return reverse_iterator{r};
+	return reverse_iterator(r);
 }
 constexpr auto
 rend(range ){
