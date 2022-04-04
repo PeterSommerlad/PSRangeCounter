@@ -56,6 +56,14 @@ struct iterator_traits<ps_counter::iterator>{
 	using pointer_type = value_type const *;
 	using reference_type = value_type const &;
 };
+template<>
+struct iterator_traits<ps_counter::reverse_iterator>{
+	using iterator_category=input_iterator_tag;
+	using value_type=decltype(*ps_counter::reverse_iterator{});
+	using difference_type=ptrdiff_t;
+	using pointer_type = value_type const *;
+	using reference_type = value_type const &;
+};
 }
 
 

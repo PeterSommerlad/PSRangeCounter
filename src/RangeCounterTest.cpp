@@ -83,8 +83,17 @@ void testRbeginIncDecrementsValue(){
 	ASSERT_EQUAL(8u, *rit);
 }
 
-
-
+// ensure iterator detection works:
+static_assert(std::is_base_of_v<std::input_iterator_tag,std::iterator_traits<ps_counter::iterator>::iterator_category>);
+static_assert(std::is_same_v<size_t,std::iterator_traits<ps_counter::iterator>::value_type>);
+static_assert(std::is_same_v<ptrdiff_t,std::iterator_traits<ps_counter::iterator>::difference_type>);
+static_assert(std::is_same_v<size_t const *,std::iterator_traits<ps_counter::iterator>::pointer_type>);
+static_assert(std::is_same_v<size_t const &,std::iterator_traits<ps_counter::iterator>::reference_type>);
+static_assert(std::is_base_of_v<std::input_iterator_tag,std::iterator_traits<ps_counter::reverse_iterator>::iterator_category>);
+static_assert(std::is_same_v<size_t,std::iterator_traits<ps_counter::reverse_iterator>::value_type>);
+static_assert(std::is_same_v<ptrdiff_t,std::iterator_traits<ps_counter::reverse_iterator>::difference_type>);
+static_assert(std::is_same_v<size_t const *,std::iterator_traits<ps_counter::reverse_iterator>::pointer_type>);
+static_assert(std::is_same_v<size_t const &,std::iterator_traits<ps_counter::reverse_iterator>::reference_type>);
 
 #include "reversed.h"
 
