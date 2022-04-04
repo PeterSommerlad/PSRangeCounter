@@ -38,6 +38,14 @@ void testUnitRangeIteratorCanIncrement(){
 	++it;
 	ASSERT_EQUAL(it,end(range));
 }
+void testPostfixIncrementAsWell(){
+	auto const range { 1_times };
+	auto it=begin(range);
+	it++;
+	ASSERT_EQUAL(it,end(range));
+}
+
+
 void testRangeLoopEmpty(){
 	bool inbody{};
 	for(auto const i: 0_times){
@@ -82,6 +90,12 @@ void testRbeginIncDecrementsValue(){
 	++rit;
 	ASSERT_EQUAL(8u, *rit);
 }
+void testRbeginIncPostfixDecrementsValue(){
+	auto const range { 10_times };
+	auto rit=rbegin(range);
+	rit++;
+	ASSERT_EQUAL(8u, *rit);
+}
 
 // ensure iterator detection works:
 static_assert(std::is_base_of_v<std::input_iterator_tag,std::iterator_traits<ps_counter::iterator>::iterator_category>);
@@ -95,9 +109,18 @@ static_assert(std::is_same_v<ptrdiff_t,std::iterator_traits<ps_counter::reverse_
 static_assert(std::is_same_v<size_t const *,std::iterator_traits<ps_counter::reverse_iterator>::pointer_type>);
 static_assert(std::is_same_v<size_t const &,std::iterator_traits<ps_counter::reverse_iterator>::reference_type>);
 
+#if __cplusplus > 201900
+static_assert(std::input_iterator<ps_counter::iterator>);
+static_assert(std::input_iterator<ps_counter::reverse_iterator>);
+
+
+#endif
+
+
 #include "reversed.h"
 
 #include <algorithm>
+#include <iterator>
 
 #include <string>
 
@@ -144,6 +167,8 @@ bool runAllTests(int argc, char const *argv[]) {
 	s.push_back(CUTE(testRbeginIncDecrementsValue));
 	s.push_back(CUTE(test_with_algorithm));
 	s.push_back(CUTE(test_with_copy));
+	s.push_back(CUTE(testPostfixIncrementAsWell));
+	s.push_back(CUTE(testRbeginIncPostfixDecrementsValue));
 	cute::xml_file_opener xmlfile(argc, argv);
 	cute::xml_listener<cute::ide_listener<>> lis(xmlfile.out);
 	auto runner = cute::makeRunner(lis, argc, argv);

@@ -36,6 +36,12 @@ constexpr auto&
 operator++(iterator &it){
 	return it = iterator{*it+1};
 }
+constexpr auto
+operator++(iterator &it,int){
+	auto res=it;
+	++it;
+	return res;
+}
 
 constexpr auto
 operator*(reverse_iterator const it){
@@ -45,6 +51,13 @@ constexpr auto&
 operator++(reverse_iterator &it){
 	return it = reverse_iterator{*it};
 }
+constexpr auto
+operator++(reverse_iterator &it,int){
+	auto res=it;
+	++it;
+	return res;
+}
+
 }
 #include <iterator>
 namespace std{
