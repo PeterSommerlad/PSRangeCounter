@@ -4,9 +4,15 @@
 #include "xml_listener.h"
 #include "cute_runner.h"
 
+#include "reversed.h"
 
-using ps_counter::operator""_times;
+#include <algorithm>
+#include <iterator>
 
+#include <string>
+#include <vector>
+
+using namespace ps_counter::literals;
 
 
 void testBeginReturnsZero() {
@@ -15,7 +21,7 @@ void testBeginReturnsZero() {
 }
 
 void testEndReturnsNumber(){
-	auto const range { 10_times };
+	auto const range { 10_up_to };
 	ASSERT_EQUAL(*end(range),10u);
 }
 void testIteratorsCompareEqual(){
@@ -97,6 +103,96 @@ void testRbeginIncPostfixDecrementsValue(){
 	ASSERT_EQUAL(8u, *rit);
 }
 
+void testReversedRangeBeginsWithNminus1(){
+	auto const rrange { 10_down_from };
+	ASSERT_EQUAL(9,*begin(rrange));
+}
+void testReverseRangeEndsWithMaxSizeT(){
+	auto const rrange { 10_down_from };
+	ASSERT_EQUAL(std::numeric_limits<size_t>::max(),*end(rrange));
+}
+
+void testReversedRangeIteratorsCompareEqual(){
+	auto const rrange { 10_down_from };
+	ASSERT_EQUAL(begin(rrange),begin(rrange));
+}
+void testReversedRangeBeginEndCompareInequal(){
+	auto const rrange { 10_down_from };
+	ASSERT_NOT_EQUAL_TO(begin(rrange),end(rrange));
+}
+
+void testEmptyReversedRangeBeginEndEqual(){
+	auto const range { 0_times };
+	ASSERT_EQUAL(begin(range),end(range));
+}
+void testUnitReversedRangeIteratorCanIncrement(){
+	auto const range { 1_down_from };
+	auto it=begin(range);
+	++it;
+	ASSERT_EQUAL(it,end(range));
+}
+void testReversedRangePostfixIncrementAsWell(){
+	auto const range { 1_down_from };
+	auto it=begin(range);
+	it++;
+	ASSERT_EQUAL(it,end(range));
+}
+
+
+void testReversedRangeLoopEmpty(){
+	bool inbody{};
+	for(auto const i: 0_down_from){
+		inbody = true;
+		std::ignore = i;
+	}
+	ASSERT(not inbody);
+}
+void testReversedRangeLoopOnce(){
+	bool inbody{};
+	for(auto const i: 1_down_from){
+		inbody = true;
+		std::ignore = i;
+	}
+	ASSERT(inbody);
+}
+void testReversedRangeLoopLoops(){
+	size_t sum{};
+	for(auto const i : 11_down_from){
+		sum +=i;
+	}
+	ASSERT_EQUAL(55u,sum);
+}
+
+
+void testReversedRangeForWithVariable(){
+	int const steps{5};
+	size_t sum{};
+	for(auto const i: ps_counter::reverse_range(steps)){
+		sum += i;
+	}
+	ASSERT_EQUAL(10u,sum);
+}
+void testReversedRangeRbeginOneFromEnd(){
+	auto const range { 10_down_from };
+	auto rit=rbegin(range);
+	ASSERT_EQUAL(0u, *rit);
+}
+void testReversedRangeRbeginIncIncrementsValue(){
+	auto const range { 10_down_from };
+	auto rit=rbegin(range);
+	++rit;
+	ASSERT_EQUAL(1u, *rit);
+}
+void testReversedRangeRbeginIncPostfixIncrementsValue(){
+	auto const range { 10_down_from };
+	auto rit=rbegin(range);
+	rit++;
+	ASSERT_EQUAL(1u, *rit);
+}
+
+
+
+
 // ensure iterator detection works:
 static_assert(std::is_base_of_v<std::input_iterator_tag,std::iterator_traits<ps_counter::iterator>::iterator_category>);
 static_assert(std::is_same_v<size_t,std::iterator_traits<ps_counter::iterator>::value_type>);
@@ -117,18 +213,12 @@ static_assert(std::input_iterator<ps_counter::reverse_iterator>);
 #endif
 
 
-#include "reversed.h"
-
-#include <algorithm>
-#include <iterator>
-
-#include <string>
 
 using adapter::reversed;
 
 void testReversedRange(){
 	std::string sum{};
-	for(auto const i : reversed(11_times) ){
+	for(auto const i : adapter::reversed(11_times) ){
 		sum.append(std::to_string(i));
 	}
 	ASSERT_EQUAL("109876543210",sum);
@@ -137,7 +227,7 @@ void testReversedRange(){
 void test_with_algorithm(){
 	std::string s{};
 	using it=ps_counter::iterator;
-	std::transform(it{},it{10},std::back_inserter(s),[](size_t i){return std::to_string(i)[0];});
+	std::transform(it{},it{10},std::back_inserter(s),[](size_t const i){return std::to_string(i)[0];});
 	ASSERT_EQUAL("0123456789",s);
 }
 
@@ -147,11 +237,38 @@ void test_with_copy(){
 	std::copy(it{},it{10}, std::back_inserter(v));
 	ASSERT_EQUAL(10,v.size());
 }
+void testReversedReversedRange(){
+	std::string sum{};
+	for(auto const i : reversed(11_down_from) ){
+		sum.append(std::to_string(i));
+	}
+	ASSERT_EQUAL("012345678910",sum);
+}
+void testForwardReversedRange(){
+	std::string sum{};
+	for(auto const i : 11_down_from ){
+		sum.append(std::to_string(i));
+	}
+	ASSERT_EQUAL("109876543210",sum);
+}
+
+void test_with_algorithm_ReversedRange(){
+	std::string s{};
+	using it=ps_counter::reverse_iterator;
+	std::transform(it{10},it{4},std::back_inserter(s),[](size_t const i){return std::to_string(i)[0];});
+	ASSERT_EQUAL("987654",s);
+}
+
+void test_with_copy_ReversedRange(){
+	using it=ps_counter::reverse_iterator;
+	std::vector<int> v{};
+	std::copy(it{10},it{5}, std::back_inserter(v));
+	ASSERT_EQUAL(5,v.size());
+}
 
 
 bool runAllTests(int argc, char const *argv[]) {
 	cute::suite s { };
-	//TODO add your test here
 	s.push_back(CUTE(testBeginReturnsZero));
 	s.push_back(CUTE(testEndReturnsNumber));
 	s.push_back(CUTE(testIteratorsCompareEqual));
@@ -169,10 +286,28 @@ bool runAllTests(int argc, char const *argv[]) {
 	s.push_back(CUTE(test_with_copy));
 	s.push_back(CUTE(testPostfixIncrementAsWell));
 	s.push_back(CUTE(testRbeginIncPostfixDecrementsValue));
+	s.push_back(CUTE(testReversedRangeBeginsWithNminus1));
+	s.push_back(CUTE(testReverseRangeEndsWithMaxSizeT));
+	s.push_back(CUTE(testReversedRangeIteratorsCompareEqual));
+	s.push_back(CUTE(testReversedRangeBeginEndCompareInequal));
+	s.push_back(CUTE(testEmptyReversedRangeBeginEndEqual));
+	s.push_back(CUTE(testUnitReversedRangeIteratorCanIncrement));
+	s.push_back(CUTE(testReversedRangePostfixIncrementAsWell));
+	s.push_back(CUTE(testReversedRangeLoopEmpty));
+	s.push_back(CUTE(testReversedRangeLoopOnce));
+	s.push_back(CUTE(testReversedRangeLoopLoops));
+	s.push_back(CUTE(testReversedRangeForWithVariable));
+	s.push_back(CUTE(testReversedRangeRbeginOneFromEnd));
+	s.push_back(CUTE(testReversedRangeRbeginIncIncrementsValue));
+	s.push_back(CUTE(testReversedRangeRbeginIncPostfixIncrementsValue));
+	s.push_back(CUTE(testReversedReversedRange));
+	s.push_back(CUTE(test_with_algorithm_ReversedRange));
+	s.push_back(CUTE(test_with_copy_ReversedRange));
+	s.push_back(CUTE(testForwardReversedRange));
 	cute::xml_file_opener xmlfile(argc, argv);
 	cute::xml_listener<cute::ide_listener<>> lis(xmlfile.out);
-	auto runner = cute::makeRunner(lis, argc, argv);
-	bool success = runner(s, "AllTests");
+	auto const runner = cute::makeRunner(lis, argc, argv);
+	bool const success = runner(s, "AllTests");
 	return success;
 }
 

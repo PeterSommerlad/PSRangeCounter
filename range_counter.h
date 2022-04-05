@@ -5,10 +5,21 @@
 namespace ps_counter {
 enum class range:size_t{};
 enum class iterator:size_t{};
+enum class reverse_range:size_t{};
 enum class reverse_iterator:size_t{};
+inline namespace literals {
 constexpr auto
-operator"" _times(unsigned long long count){
+operator"" _times(unsigned long long const count){
 	return range{count};
+}
+constexpr auto
+operator"" _up_to(unsigned long long const count){
+	return range{count};
+}
+constexpr auto
+operator"" _down_from(unsigned long long const count){
+	return reverse_range{count};
+}
 }
 constexpr auto
 begin(range){
@@ -27,6 +38,25 @@ constexpr auto
 rend(range ){
 	return reverse_iterator{};
 }
+
+constexpr auto
+begin(reverse_range const r){
+	return reverse_iterator(r);
+}
+constexpr auto
+end(reverse_range){
+	return reverse_iterator{};
+}
+
+constexpr auto
+rbegin(reverse_range){
+	return iterator{};
+}
+constexpr auto
+rend(reverse_range  const r){
+	return iterator(r);
+}
+
 
 constexpr auto
 operator*(iterator const it){

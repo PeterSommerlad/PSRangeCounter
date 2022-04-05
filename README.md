@@ -14,15 +14,15 @@ Example usage:
 
 ```C++
 #include "range_counter.h"
-using ps_counter::operator""_times;
+using namespace ps_counter::literals;
 
 
 void testRangeLoopLoops(){
 	size_t sum{};
-	for(auto const i : 11_times){
+	for(auto const i : 11_times){ // or 11_up_to
 		sum +=i;
 	}
-	ASSERT_EQUAL(55u,sum);
+	ASSERT_EQUAL(55u,sum); // [0..10]
 }
 void test_with_algorithm(){
 	std::string s{};
@@ -49,6 +49,18 @@ using adapter::reversed;
 void testReversedRange(){
 	std::string sum{};
 	for(auto const i : reversed(11_times) ){
+		sum.append(std::to_string(i));
+	}
+	ASSERT_EQUAL("109876543210",sum);
+}
+```
+
+Or simpler, use `ps_counter::reverse_range` by using suffix `_down_from`
+
+```C++
+void testForwardReversedRange(){
+	std::string sum{};
+	for(auto const i : 11_down_from ){
 		sum.append(std::to_string(i));
 	}
 	ASSERT_EQUAL("109876543210",sum);
