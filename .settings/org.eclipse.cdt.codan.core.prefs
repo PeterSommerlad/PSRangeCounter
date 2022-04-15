@@ -208,7 +208,7 @@ com.cevelop.gslator.problems.C.63_02MoveAssignmentReturnByNonConstRef=Warning
 com.cevelop.gslator.problems.C.63_02MoveAssignmentReturnByNonConstRef.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"C.63\: Return parameter should be non-const&\\")"}
 com.cevelop.gslator.problems.C.66MoveOperationsNoExcept=Warning
 com.cevelop.gslator.problems.C.66MoveOperationsNoExcept.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"C.66\: Move operations should be declared noexcept\\")"}
-com.cevelop.gslator.problems.C.83ValueLikeTypesShouldHaveSwap=Warning
+com.cevelop.gslator.problems.C.83ValueLikeTypesShouldHaveSwap=-Warning
 com.cevelop.gslator.problems.C.83ValueLikeTypesShouldHaveSwap.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"C.83\: Missing/broken swap function\\")"}
 com.cevelop.gslator.problems.C.84MakeSwapNoExcept=Warning
 com.cevelop.gslator.problems.C.84MakeSwapNoExcept.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"C.84 Make Swap noexcept\\")"}

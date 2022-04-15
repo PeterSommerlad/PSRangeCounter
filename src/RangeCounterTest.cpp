@@ -10,7 +10,9 @@
 #include <iterator>
 
 #include <string>
+#include <string_view>
 #include <vector>
+#include "range_counter_range_tests.h"
 
 using namespace ps_counter::literals;
 
@@ -212,6 +214,13 @@ static_assert(std::input_iterator<ps_counter::reverse_iterator>);
 
 #endif
 
+void testReverseRange(){
+	std::string sum{};
+	for(auto const i : reverse(11_times) ){
+		sum.append(std::to_string(i));
+	}
+	ASSERT_EQUAL("109876543210",sum);
+}
 
 
 using adapter::reversed;
@@ -267,6 +276,9 @@ void test_with_copy_ReversedRange(){
 }
 
 
+
+
+
 bool runAllTests(int argc, char const *argv[]) {
 	cute::suite s { };
 	s.push_back(CUTE(testBeginReturnsZero));
@@ -304,10 +316,13 @@ bool runAllTests(int argc, char const *argv[]) {
 	s.push_back(CUTE(test_with_algorithm_ReversedRange));
 	s.push_back(CUTE(test_with_copy_ReversedRange));
 	s.push_back(CUTE(testForwardReversedRange));
+	s.push_back(CUTE(testReverseRange));
 	cute::xml_file_opener xmlfile(argc, argv);
 	cute::xml_listener<cute::ide_listener<>> lis(xmlfile.out);
 	auto const runner = cute::makeRunner(lis, argc, argv);
-	bool const success = runner(s, "AllTests");
+	bool success = runner(s, "AllTests");
+	cute::suite range_counter_range_tests = make_suite_range_counter_range_tests();
+	success &= runner(range_counter_range_tests, "range_counter_range_tests");
 	return success;
 }
 
