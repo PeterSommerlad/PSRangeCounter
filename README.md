@@ -85,7 +85,7 @@ However, this requires a class type for keeping both values around, instead of a
 Also the syntax for specifying the ranges is a bit unintuitive, because it employs valid floating point syntax to separate start from end and 
 to allow inclusive and exclusive ranges to be specified with the same UDL suffix `_range`. 
 The underlying scaffolding needed in addtion to the contents of `"range_counter.h"` is not part of the public API.
-If you need to specify a range with variable content, use a `ps_counter::(reverse_)iterator` pair or in case of C++20 `std::iota_view`.
+If you need to specify a range with variable content, use a `ps_counter::(reverse_)iterator` pair or in case of C++20 `std::ranges::iota_view` or its companion `std::views::iota`.
 
 The following are supported `.` - dot = half-open range, `'` - quote = closed range, counting down is automatically determined if the first integer is bigger than the second one:
 
