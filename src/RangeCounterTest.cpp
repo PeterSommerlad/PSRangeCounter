@@ -199,13 +199,13 @@ void testReversedRangeRbeginIncPostfixIncrementsValue(){
 static_assert(std::is_base_of_v<std::input_iterator_tag,std::iterator_traits<ps_counter::iterator>::iterator_category>);
 static_assert(std::is_same_v<size_t,std::iterator_traits<ps_counter::iterator>::value_type>);
 static_assert(std::is_same_v<ptrdiff_t,std::iterator_traits<ps_counter::iterator>::difference_type>);
-static_assert(std::is_same_v<size_t const *,std::iterator_traits<ps_counter::iterator>::pointer_type>);
-static_assert(std::is_same_v<size_t const &,std::iterator_traits<ps_counter::iterator>::reference_type>);
+static_assert(std::is_same_v<size_t const *,std::iterator_traits<ps_counter::iterator>::pointer>);
+static_assert(std::is_same_v<size_t const &,std::iterator_traits<ps_counter::iterator>::reference>);
 static_assert(std::is_base_of_v<std::input_iterator_tag,std::iterator_traits<ps_counter::reverse_iterator>::iterator_category>);
 static_assert(std::is_same_v<size_t,std::iterator_traits<ps_counter::reverse_iterator>::value_type>);
 static_assert(std::is_same_v<ptrdiff_t,std::iterator_traits<ps_counter::reverse_iterator>::difference_type>);
-static_assert(std::is_same_v<size_t const *,std::iterator_traits<ps_counter::reverse_iterator>::pointer_type>);
-static_assert(std::is_same_v<size_t const &,std::iterator_traits<ps_counter::reverse_iterator>::reference_type>);
+static_assert(std::is_same_v<size_t const *,std::iterator_traits<ps_counter::reverse_iterator>::pointer>);
+static_assert(std::is_same_v<size_t const &,std::iterator_traits<ps_counter::reverse_iterator>::reference>);
 
 #if __cplusplus > 201900
 static_assert(std::input_iterator<ps_counter::iterator>);
@@ -275,6 +275,19 @@ void test_with_copy_ReversedRange(){
 	ASSERT_EQUAL(5,v.size());
 }
 
+void test_iterators_can_deduce_vector(){
+	using it=ps_counter::iterator;
+	std::vector v(it{0},it{10});
+	static_assert(std::is_same_v<size_t,decltype(v)::value_type>);
+	ASSERT_EQUAL(10u,v.size());
+}
+
+void test_reverse_iterators_can_deduce_vector(){
+	using it=ps_counter::reverse_iterator;
+	std::vector v(it{10},it{0});
+	static_assert(std::is_same_v<size_t,decltype(v)::value_type>);
+	ASSERT_EQUAL(10u,v.size());
+}
 
 
 
@@ -322,6 +335,8 @@ bool runAllTests(int argc, char const *argv[]) {
 	auto const runner = cute::makeRunner(lis, argc, argv);
 	bool success = runner(s, "AllTests");
 	cute::suite range_counter_range_tests = make_suite_range_counter_range_tests();
+	range_counter_range_tests.push_back(CUTE(test_iterators_can_deduce_vector));
+	range_counter_range_tests.push_back(CUTE(test_reverse_iterators_can_deduce_vector));
 	success &= runner(range_counter_range_tests, "range_counter_range_tests");
 	return success;
 }
