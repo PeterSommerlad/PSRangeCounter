@@ -2,7 +2,7 @@
 #define RANGE_COUNTER_H_
 
 #include <iterator>    // for iterator_traits
-
+#include <cstdint>     // for ptrdiff_t
 
 
 namespace ps_counter {
